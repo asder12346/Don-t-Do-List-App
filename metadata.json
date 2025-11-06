@@ -1,0 +1,5 @@
+{
+  "name": "Don't Do List",
+  "description": "A minimalist application to help you track and avoid bad habits, inspired by the 'Don't Do List' concept. Track anti-tasks, use a focus timer, and gain insights into your habits to improve productivity and well-being.",
+  "requestFramePermissions": []
+}
