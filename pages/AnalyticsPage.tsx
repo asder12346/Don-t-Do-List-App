@@ -4,6 +4,7 @@ import { Layout } from '../components/Layout';
 import { useTasks } from '../hooks/useTasks';
 import { Category, ImpactTier } from '../types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Sector } from 'recharts';
+import { PageTransition } from '../components/PageTransition';
 
 const COLORS = ['#06b6d4', '#facc15', '#ef4444'];
 const CATEGORY_COLORS = ['#34d399', '#60a5fa', '#fb923c'];
@@ -139,102 +140,104 @@ export const AnalyticsPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="p-4 md:p-8">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Progress & Analytics</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold text-muted-light dark:text-muted-dark">Total Tasks</h3>
-                <p className="text-4xl font-bold text-gray-800 dark:text-white mt-2">{tasks.length}</p>
+      <PageTransition>
+        <div className="p-4 md:p-8">
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Progress & Analytics</h1>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm">
+                    <h3 className="text-lg font-semibold text-muted-light dark:text-muted-dark">Total Tasks</h3>
+                    <p className="text-4xl font-bold text-gray-800 dark:text-white mt-2">{tasks.length}</p>
+                </div>
+                <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm">
+                    <h3 className="text-lg font-semibold text-muted-light dark:text-muted-dark">Total Times Avoided {startDate && endDate ? 'in Period' : ''}</h3>
+                    <p className="text-4xl font-bold text-gray-800 dark:text-white mt-2">{analyticsData.totalAvoided}</p>
+                </div>
+                <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm">
+                    <h3 className="text-lg font-semibold text-muted-light dark:text-muted-dark">Longest Streak</h3>
+                    <p className="text-4xl font-bold text-gray-800 dark:text-white mt-2">5 Days 🔥</p>
+                </div>
             </div>
-             <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold text-muted-light dark:text-muted-dark">Total Times Avoided {startDate && endDate ? 'in Period' : ''}</h3>
-                <p className="text-4xl font-bold text-gray-800 dark:text-white mt-2">{analyticsData.totalAvoided}</p>
-            </div>
-             <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold text-muted-light dark:text-muted-dark">Longest Streak</h3>
-                <p className="text-4xl font-bold text-gray-800 dark:text-white mt-2">5 Days 🔥</p>
-            </div>
-        </div>
 
-        <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm mb-8">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Tasks Avoided {startDate && endDate ? 'in Selected Period' : 'This Week'}</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={analyticsData.weeklyAvoidedData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(128,128,128,0.2)" />
-                    <XAxis dataKey="name" tick={{ fill: '#94a3b8' }} />
-                    <YAxis allowDecimals={false} tick={{ fill: '#94a3b8' }} />
-                    <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '0.5rem' }} />
-                    <Bar dataKey="avoided" fill="#2dd4bf" />
-                </BarChart>
-            </ResponsiveContainer>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-             <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm">
-                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Tasks by Category</h2>
+            <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm mb-8">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Tasks Avoided {startDate && endDate ? 'in Selected Period' : 'This Week'}</h2>
                 <ResponsiveContainer width="100%" height={300}>
-                   <PieChart>
-                    <Pie data={analyticsData.categoryData} cx="50%" cy="50%" labelLine={false} outerRadius={100} fill="#8884d8" dataKey="value" activeIndex={activeIndex} activeShape={renderActiveShape} onMouseEnter={onPieEnter}>
-                       {analyticsData.categoryData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]} />
-                       ))}
-                     </Pie>
-                   </PieChart>
+                    <BarChart data={analyticsData.weeklyAvoidedData}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(128,128,128,0.2)" />
+                        <XAxis dataKey="name" tick={{ fill: '#94a3b8' }} />
+                        <YAxis allowDecimals={false} tick={{ fill: '#94a3b8' }} />
+                        <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '0.5rem' }} />
+                        <Bar dataKey="avoided" fill="#2dd4bf" />
+                    </BarChart>
                 </ResponsiveContainer>
             </div>
             
-             <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm">
-                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Tasks by Impact Tier</h2>
-                <ResponsiveContainer width="100%" height={300}>
-                   <PieChart>
-                     <Pie data={analyticsData.tierData} cx="50%" cy="50%" labelLine={false} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} outerRadius={100} fill="#8884d8" dataKey="value">
-                       {analyticsData.tierData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                       ))}
-                     </Pie>
-                     <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '0.5rem' }} />
-                   </PieChart>
-                </ResponsiveContainer>
-            </div>
-        </div>
-        
-        <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm mt-8">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Task History Log</h2>
-            <div className="flex flex-col md:flex-row gap-4 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-                <div>
-                    <label htmlFor="start-date" className="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">Start Date</label>
-                    <input type="date" id="start-date" value={startDate} onChange={e => setStartDate(e.target.value)} className="w-full p-2 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-md"/>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm">
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Tasks by Category</h2>
+                    <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                        <Pie data={analyticsData.categoryData} cx="50%" cy="50%" labelLine={false} outerRadius={100} fill="#8884d8" dataKey="value" activeIndex={activeIndex} activeShape={renderActiveShape} onMouseEnter={onPieEnter}>
+                        {analyticsData.categoryData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]} />
+                        ))}
+                        </Pie>
+                    </PieChart>
+                    </ResponsiveContainer>
                 </div>
-                <div>
-                    <label htmlFor="end-date" className="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">End Date</label>
-                    <input type="date" id="end-date" value={endDate} onChange={e => setEndDate(e.target.value)} className="w-full p-2 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-md"/>
-                </div>
-                <div className="flex items-end">
-                    <button onClick={() => { setStartDate(''); setEndDate(''); }} className="px-4 py-2 h-10 rounded-md text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-slate-600 hover:bg-gray-300 dark:hover:bg-slate-500 transition-colors w-full md:w-auto">Clear</button>
+                
+                <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm">
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Tasks by Impact Tier</h2>
+                    <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                        <Pie data={analyticsData.tierData} cx="50%" cy="50%" labelLine={false} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} outerRadius={100} fill="#8884d8" dataKey="value">
+                        {analyticsData.tierData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '0.5rem' }} />
+                    </PieChart>
+                    </ResponsiveContainer>
                 </div>
             </div>
+            
+            <div className="bg-white dark:bg-bg-dark-secondary p-6 rounded-lg shadow-sm mt-8">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Task History Log</h2>
+                <div className="flex flex-col md:flex-row gap-4 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <div>
+                        <label htmlFor="start-date" className="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">Start Date</label>
+                        <input type="date" id="start-date" value={startDate} onChange={e => setStartDate(e.target.value)} className="w-full p-2 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-md"/>
+                    </div>
+                    <div>
+                        <label htmlFor="end-date" className="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">End Date</label>
+                        <input type="date" id="end-date" value={endDate} onChange={e => setEndDate(e.target.value)} className="w-full p-2 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-md"/>
+                    </div>
+                    <div className="flex items-end">
+                        <button onClick={() => { setStartDate(''); setEndDate(''); }} className="px-4 py-2 h-10 rounded-md text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-slate-600 hover:bg-gray-300 dark:hover:bg-slate-500 transition-colors w-full md:w-auto">Clear</button>
+                    </div>
+                </div>
 
-            <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
-                {historicalLog.length > 0 ? (
-                    historicalLog.map((log, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-md">
-                            <div>
-                                <p className="font-semibold text-gray-800 dark:text-gray-100">{log.taskName}</p>
-                                <p className="text-sm text-muted-light dark:text-muted-dark">{new Date(log.date).toLocaleString()}</p>
+                <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                    {historicalLog.length > 0 ? (
+                        historicalLog.map((log, index) => (
+                            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-md">
+                                <div>
+                                    <p className="font-semibold text-gray-800 dark:text-gray-100">{log.taskName}</p>
+                                    <p className="text-sm text-muted-light dark:text-muted-dark">{new Date(log.date).toLocaleString()}</p>
+                                </div>
+                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${log.type === 'Created' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}`}>
+                                    {log.type}
+                                </span>
                             </div>
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${log.type === 'Created' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}`}>
-                                {log.type}
-                            </span>
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-muted-light dark:text-muted-dark text-center py-8">No history found for the selected period.</p>
-                )}
+                        ))
+                    ) : (
+                        <p className="text-muted-light dark:text-muted-dark text-center py-8">No history found for the selected period.</p>
+                    )}
+                </div>
             </div>
-        </div>
 
-      </div>
+        </div>
+      </PageTransition>
     </Layout>
   );
 };

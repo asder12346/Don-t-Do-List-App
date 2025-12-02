@@ -82,5 +82,9 @@ export const useTasks = () => {
     return task.avoidedOn.includes(today);
   }, []);
 
-  return { tasks, addTask, updateTask, deleteTask, toggleAvoided, isTaskAvoidedToday };
+  const reorderTasks = useCallback((newOrder: Task[]) => {
+    setTasks(newOrder);
+  }, []);
+
+  return { tasks, addTask, updateTask, deleteTask, toggleAvoided, isTaskAvoidedToday, reorderTasks };
 };

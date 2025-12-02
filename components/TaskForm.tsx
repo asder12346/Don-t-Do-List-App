@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Task, ImpactTier, Category } from '../types';
 
@@ -95,17 +96,47 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onSave, onClose, taskToEdit 
         </div>
       </div>
        <div>
-        <label htmlFor="reminder" className="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">Reminder Interval (in minutes)</label>
-        <input
-          id="reminder"
-          type="number"
-          value={reminderInterval}
-          onChange={(e) => setReminderInterval(Number(e.target.value))}
-          placeholder="e.g., 30 (0 to disable)"
-          className={inputClasses}
-          min="0"
-        />
-        <p className="text-xs text-muted-light dark:text-muted-dark mt-1">Set to 0 to disable reminders for this task.</p>
+        <label htmlFor="reminder" className="block text-sm font-medium text-muted-light dark:text-muted-dark mb-2">Reminder Interval</label>
+        <div className="flex flex-wrap gap-2 mb-3">
+            {[15, 30, 60, 120].map((mins) => (
+                <button
+                    key={mins}
+                    type="button"
+                    onClick={() => setReminderInterval(mins)}
+                    className={`px-3 py-1 text-xs rounded-full border transition-colors ${
+                        reminderInterval === mins
+                            ? 'bg-primary-light dark:bg-primary-dark text-white border-transparent'
+                            : 'bg-transparent text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-slate-700'
+                    }`}
+                >
+                    {mins < 60 ? `${mins}m` : `${mins / 60}h`}
+                </button>
+            ))}
+             <button
+                    type="button"
+                    onClick={() => setReminderInterval(0)}
+                    className={`px-3 py-1 text-xs rounded-full border transition-colors ${
+                        reminderInterval === 0
+                            ? 'bg-gray-500 text-white border-transparent'
+                            : 'bg-transparent text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-slate-700'
+                    }`}
+                >
+                    None
+            </button>
+        </div>
+        <div className="relative">
+            <input
+            id="reminder"
+            type="number"
+            value={reminderInterval}
+            onChange={(e) => setReminderInterval(Math.max(0, Number(e.target.value)))}
+            placeholder="Custom interval (in minutes)"
+            className={inputClasses}
+            min="0"
+            />
+            <span className="absolute right-3 top-3.5 text-sm text-gray-400 pointer-events-none">min</span>
+        </div>
+        <p className="text-xs text-muted-light dark:text-muted-dark mt-1">Receive a browser notification at this interval to help you stay on track.</p>
       </div>
       <div className="flex justify-end space-x-4">
         <button type="button" onClick={onClose} className="px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-slate-600 hover:bg-gray-300 dark:hover:bg-slate-500 transition-colors">
